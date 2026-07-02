@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.auth.LoginRequest;
 import com.example.demo.dto.auth.LoginResponse;
+import com.example.demo.dto.user.UserResponse;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtUtil;
@@ -32,6 +33,19 @@ public class AuthService {
         return LoginResponse.builder()
                 .token(token)
                 .username(user.getUsername())
+                .build();
+    }
+
+    public UserResponse getCurrentUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증 정보가 유효하지 않습니다."));
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .age(user.getAge())
+                .email(user.getEmail())
+                .city(user.getCity())
                 .build();
     }
 }
